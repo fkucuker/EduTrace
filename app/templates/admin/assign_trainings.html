@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Eğitim Ata - {{ user.isim }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-graduation-cap me-2"></i>Eğitim Ata
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{{ user.isim }}</strong> kullanıcısına eğitim atıyorsunuz.
+                    </div>
+                    
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.kullanici_id.label(class="form-label") }}
+                            {{ form.kullanici_id(class="form-select", disabled=true) }}
+                            <div class="form-text">Kullanıcı seçimi değiştirilemez.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.egitim_ids.label(class="form-label") }}
+                            {{ form.egitim_ids(class="form-select", size="10", multiple=true) }}
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Birden fazla eğitim seçmek için Ctrl (Windows) veya Cmd (Mac) tuşunu basılı tutun.
+                            </div>
+                            {% if form.egitim_ids.errors %}
+                                <div class="text-danger small">
+                                    {% for error in form.egitim_ids.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('admin.users') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                            </a>
+                            {{ form.submit(class="btn btn-success") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

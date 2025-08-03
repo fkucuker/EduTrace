@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Eğitim-Bölüm İlişkileri{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-link me-2"></i>Eğitim-Bölüm İlişkileri</h2>
+                <a href="{{ url_for('admin.add_training_section') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Yeni İlişki Ekle
+                </a>
+            </div>
+
+            {% if sections %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Eğitim</th>
+                                    <th>Bölüm</th>
+                                    <th>Seviye</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for section in sections %}
+                                <tr>
+                                    <td>{{ section.id }}</td>
+                                    <td>
+                                        <strong>{{ section.egitim.kod }}</strong><br>
+                                        <small class="text-muted">{{ section.egitim.baslik }}</small>
+                                    </td>
+                                    <td>{{ section.bolum.ad }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if section.seviye.ad == 'Temel' %}success{% elif section.seviye.ad == 'Orta' %}warning{% else %}danger{% endif %}">
+                                            {{ section.seviye.ad }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('admin.delete_training_section', id=section.id) }}" 
+                                              style="display: inline;" 
+                                              onsubmit="return confirm('Bu ilişkiyi silmek istediğinizden emin misiniz?')">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Henüz eğitim-bölüm ilişkisi tanımlanmamış. 
+                <a href="{{ url_for('admin.add_training_section') }}" class="alert-link">İlk ilişkiyi ekleyin</a>.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

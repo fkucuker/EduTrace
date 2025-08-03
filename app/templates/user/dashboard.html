@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2 class="mb-4">
+            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </h2>
+    </div>
+</div>
+
+<!-- İstatistikler -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ stats.total_assigned }}</h4>
+                        <p class="card-text">Atanan Eğitim</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ stats.completed }}</h4>
+                        <p class="card-text">Tamamlanan</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ stats.in_progress }}</h4>
+                        <p class="card-text">Devam Eden</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-secondary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title">{{ stats.not_started }}</h4>
+                        <p class="card-text">Başlanmamış</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-pause-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- İlerleme Çubuğu -->
+{% if stats.total_assigned > 0 %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-bar me-2"></i>Genel İlerleme
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="progress mb-2">
+                    <div class="progress-bar bg-success" role="progressbar" 
+                         style="width: {{ (stats.completed / stats.total_assigned * 100) | round(1) }}%">
+                        {{ (stats.completed / stats.total_assigned * 100) | round(1) }}%
+                    </div>
+                </div>
+                <small class="text-muted">
+                    {{ stats.completed }} / {{ stats.total_assigned }} eğitim tamamlandı
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Devam Eden Eğitimler -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Devam Eden Eğitimler
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if in_progress %}
+                    <div class="list-group list-group-flush">
+                        {% for ut in in_progress %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ ut.egitim.kod }} - {{ ut.egitim.baslik }}</h6>
+                                        <small class="text-muted">
+                                            Başlama: {{ ut.baslama_tarihi.strftime('%d.%m.%Y') }}
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <a href="{{ url_for('user.training_detail', training_id=ut.egitim.id) }}" 
+                                           class="btn btn-sm btn-outline-primary me-2">
+                                            <i class="fas fa-eye"></i> Detay
+                                        </a>
+                                        <form method="POST" action="{{ url_for('user.complete_training', training_id=ut.egitim.id) }}" 
+                                              class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-success" 
+                                                    onclick="return confirm('Eğitimi tamamladığınızdan emin misiniz?')">
+                                                <i class="fas fa-check"></i> Tamamla
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Şu anda devam eden eğitiminiz yok.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Son Tamamlanan Eğitimler -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-check-circle me-2"></i>Son Tamamlanan Eğitimler
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if completed %}
+                    <div class="list-group list-group-flush">
+                        {% for ut in completed[:5] %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ ut.egitim.kod }} - {{ ut.egitim.baslik }}</h6>
+                                        <small class="text-muted">
+                                            Tamamlanma: {{ ut.tamamlanma_tarihi.strftime('%d.%m.%Y') }}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-success">Tamamlandı</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Henüz tamamlanan eğitiminiz yok.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hızlı Erişim -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>Hızlı Erişim
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('user.my_trainings') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-book me-2"></i>Tüm Eğitimlerim
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('user.career_path') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-chart-line me-2"></i>Kariyer Yolu
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('user.profile') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-user me-2"></i>Profilim
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{{ url_for('auth.change_password') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-key me-2"></i>Şifre Değiştir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

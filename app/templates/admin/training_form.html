@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-book me-2"></i>{{ title }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.kod.label(class="form-label") }}
+                                    {{ form.kod(class="form-control" + (" is-invalid" if form.kod.errors else "")) }}
+                                    {% if form.kod.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.kod.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.pre_requisite_id.label(class="form-label") }}
+                                    {{ form.pre_requisite_id(class="form-select" + (" is-invalid" if form.pre_requisite_id.errors else "")) }}
+                                    {% if form.pre_requisite_id.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.pre_requisite_id.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.baslik.label(class="form-label") }}
+                            {{ form.baslik(class="form-control" + (" is-invalid" if form.baslik.errors else "")) }}
+                            {% if form.baslik.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.baslik.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.aciklama.label(class="form-label") }}
+                            {{ form.aciklama(class="form-control", rows="4" + (" is-invalid" if form.aciklama.errors else "")) }}
+                            {% if form.aciklama.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.aciklama.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('admin.trainings') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i>Geri Dön
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

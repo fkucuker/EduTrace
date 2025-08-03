@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-graduation-cap text-primary"></i>
+                Eğitim Yönetim Sistemi
+            </h1>
+            <p class="lead mb-4">
+                Kurum içi eğitim faaliyetlerini yönetmek ve takip etmek için geliştirilmiş 
+                kapsamlı bir platform.
+            </p>
+            
+            {% if not current_user.is_authenticated %}
+                <div class="d-grid gap-2 d-md-block">
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-md-2">
+                        <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                    </a>
+                </div>
+            {% else %}
+                <div class="d-grid gap-2 d-md-block">
+                    {% if current_user.is_admin() %}
+                        <a href="{{ url_for('admin.index') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Yönetim Paneli
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('user.dashboard') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Kullanıcı Yönetimi</h5>
+                <p class="card-text">
+                    Personel, eğitmen ve yönetici rollerini destekleyen 
+                    kapsamlı kullanıcı yönetim sistemi.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-book fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Eğitim Takibi</h5>
+                <p class="card-text">
+                    Eğitim ilerlemesini takip edin, tamamlanma durumlarını 
+                    izleyin ve raporlar oluşturun.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Kariyer Yolu</h5>
+                <p class="card-text">
+                    Bölüm bazlı eğitim planları ve kariyer gelişim 
+                    yolculuğunu görselleştirin.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
