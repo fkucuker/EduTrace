@@ -10,7 +10,7 @@ class DepartmentForm(FlaskForm):
     
     def validate_ad(self, ad):
         department = Department.query.filter_by(ad=ad.data).first()
-        if department is not None and department != self._obj:
+        if department is not None and hasattr(self, '_obj') and department != self._obj:
             raise ValidationError('Bu bölüm adı zaten kullanılıyor.')
 
 class TrainingForm(FlaskForm):
@@ -26,7 +26,7 @@ class TrainingForm(FlaskForm):
     
     def validate_kod(self, kod):
         training = Training.query.filter_by(kod=kod.data).first()
-        if training is not None and training != self._obj:
+        if training is not None and hasattr(self, '_obj') and training != self._obj:
             raise ValidationError('Bu eğitim kodu zaten kullanılıyor.')
 
 class TrainingSectionForm(FlaskForm):
@@ -69,7 +69,7 @@ class UserForm(FlaskForm):
     
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
-        if user is not None and user != self._obj:
+        if user is not None and hasattr(self, '_obj') and user != self._obj:
             raise ValidationError('Bu e-posta adresi zaten kullanılıyor.')
 
 class UserPasswordForm(FlaskForm):
